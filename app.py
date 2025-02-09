@@ -1,23 +1,19 @@
 from fastapi import FastAPI, HTTPException
 from motor.motor_asyncio import AsyncIOMotorClient
 from pydantic import BaseModel
-from bson import ObjectId  # Import ObjectId to convert product_id
+from bson import ObjectId
 from dotenv import load_dotenv
 import os
 
-# Load environment variables
 load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 DB_NAME = "ecommerce"
 
-# Initialize FastAPI app
 app = FastAPI()
 
-# MongoDB Client
 client = AsyncIOMotorClient(MONGO_URI)
 db = client[DB_NAME]
 
-# Pydantic Models
 class Product(BaseModel):
     name: str
     price: float
@@ -41,7 +37,7 @@ async def get_products():
 @app.put("/products/{product_id}")
 async def update_product(product_id: str, product: Product):
     try:
-        obj_id = ObjectId(product_id)  # Convert to ObjectId
+        obj_id = ObjectId(product_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid product ID")
 
@@ -53,7 +49,7 @@ async def update_product(product_id: str, product: Product):
 @app.delete("/products/{product_id}")
 async def delete_product(product_id: str):
     try:
-        obj_id = ObjectId(product_id)  # Convert to ObjectId
+        obj_id = ObjectId(product_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid product ID")
 
